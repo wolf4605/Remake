@@ -16,8 +16,8 @@ class Mew(commands.Bot):
     async def setup_hook(self):
         try:
             for filename in os.listdir("commands"):
-                if 'pycache' in filename:
-                    print(f'{color.YELLOW}{filename} found!!!')
+                if '.py' not in filename:
+                    print(f'{color.YELLOW}{filename} is a folder!!!')
                 else:
                     await bot.load_extension(f'commands.{filename[:-3]}')
                     print(f'{color.GREEN}{filename} has been loaded.')
