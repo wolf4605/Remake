@@ -7,15 +7,25 @@ from asset import color
 
 log = logging.FileHandler(filename='Logs.txt', encoding='utf-8',mode='w')
 class Mew(commands.Bot):
+    """Main BOT class"""
     def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix=settings.Prefix, intents=intents)
 
     async def setup_hook(self):
-        for filename in os.listdir("commands"):
-            await bot.load_extension(f'commands.{filename[:-3]}')
-        print(f'{color.BOLD}{color.RED} Starting')
+        try:
+            for filename in os.listdir("commands"):
+                if 'pycache' in filename:
+                    print(f'{color.YELLOW}{filename} found!!!')
+                else:
+                    await bot.load_extension(f'commands.{filename[:-3]}')
+                    print(f'{color.GREEN}{filename} has been loaded.')
+            print(f'{color.CYAN} Inititalizing...')
+
+        except Exception as e:
+            print(e)         
+            raise
 
 bot = Mew()
 
@@ -23,14 +33,7 @@ bot = Mew()
 async def on_ready():
     """
     Function called when the bot is ready to start receiving events.
-    
-    Parameters:
-        None
-    
-    Returns:
-        None
     """
-    print(f'Logged in as {bot.user} (ID: {bot.user.id})')
-    print('------')
+    print(f'Logged in as {bot.user}.')
 
 bot.run(token=settings.Token, log_handler=log, log_level=logging.DEBUG, root_logger=True)
