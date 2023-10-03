@@ -15,11 +15,11 @@ class Mew(commands.Bot):
 
     async def setup_hook(self):
         try:
-            for filename in os.listdir("commands"):
+            for filename in os.listdir("command"):
                 if '.py' not in filename:
                     print(f'{color.YELLOW}{filename} is a folder!!!')
                 else:
-                    await bot.load_extension(f'commands.{filename[:-3]}')
+                    await bot.load_extension(f'command.{filename[:-3]}')
                     print(f'{color.GREEN}{filename} has been loaded.')
             print(f'{color.CYAN} Inititalizing...')
 
