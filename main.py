@@ -7,6 +7,7 @@ from discord.ext import commands
 from asset import color
 
 log = logging.FileHandler(filename='Logs.txt', encoding='utf-8',mode='w')
+
 class Mew(commands.Bot):
     """Main BOT class"""
     def __init__(self):
