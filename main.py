@@ -50,4 +50,36 @@ async def on_wavelink_node_ready(node: wavelink.Node):
     # Print a message indicating that the node has successfully connected
     print(f'Node : {node.id} successfully connected.')
 
+@bot.listen()
+async def on_command_error(ctx, error):
+    try:
+        # This prevents any commands with local handlers being handled here in on_command_error.
+        if hasattr(ctx.command, 'on_error'):
+            return
+        if isinstance(error, commands.MissingPermissions):
+            missing_permission = str(error.missing_perms[0])
+            await ctx.send(embed=discord.Embed(title='oops!!!',
+                            description=f"Sorry, you need the '{missing_permission}' permission to use this command.",
+                            color=discord.Color.red()))
+        elif isinstance(error, commands.CommandNotFound):
+            command_name = ctx.invoked_with
+            await ctx.send(embed=discord.Embed(title='oops!!!',
+                            description=f"No command found called '{command_name}'.",
+                            color=discord.Color.red()))
+        elif isinstance(error, commands.MissingRequiredArgument):
+            param = str(error.param)
+            await ctx.send(embed=discord.Embed(title='oops!!!',
+                            description=f"You forgot to give the '{param}' argument.",
+                            color=discord.Color.red()))
+        elif isinstance(error, commands.MissingRole):
+            missing_role = str(error.missing_role)
+            await ctx.send(embed=discord.Embed(title='oops!!!',
+                            description=f"Sorry, you need the '{missing_role}' role to use this command.",
+                        color=discord.Color.red()))
+    except Exception as e:
+        await ctx.send(embed=discord.Embed(title=f'❌ Error!!',
+                                           description=f"Oops! Something went wrong.\n```{e}```",
+                                           color = discord.Color.red()))
+        raise
+
 bot.run(token=settings.Token, log_handler=log, log_level=logging.DEBUG, root_logger=True)
