@@ -107,6 +107,9 @@ class Leveling(commands.Cog):
         """Check a your a user's profile."""
         if user is None:
             user=ctx.author
+        uid = int(user.id)
+        user = ctx.guild.get_member(uid)
+        
         # Get the user's leveling data
         cursor = await self.bot.db.cursor()
         await cursor.execute('SELECT * FROM leveling WHERE guild_id = ? AND user_id = ?', (ctx.guild.id, user.id))
@@ -135,11 +138,33 @@ class Leveling(commands.Cog):
             roles = user.roles
 
             # Find the common roles between the user's roles and the desired roles
-            common_roles = [role.name for role in roles if role.name in role_names]
+            common_roles = [role.mention for role in roles if role.name in role_names]
 
             # Calculate the progress towards the next level
             xp_percent = (xp / xp_needed) * 100
             progress_bar = f"{'██' * int(xp_percent / 10)}{'--' * (10 - int(xp_percent / 10))} {xp_percent:.2f}%"
+
+            # Checking User online presence
+            status = user.status
+
+            if 'online' in status:
+                status = '<:1514onlineblank:1159758971087888404>'
+
+            elif 'dnd' in status:
+                status = '<:4431dndblank:1159758965463322706>'
+            
+            elif 'idle' in status:
+                status = '<:5204idleblank:1159758961948512306>'
+
+            elif 'offline' in status:
+                status = '<:6610invisibleofflineblank:1159758967564668929>'
+            
+
+            #Checking if the user is a server booster or not
+            if user in ctx.guild.premium_subscribers:
+                boost= 'Yes'
+            else:
+                boost = 'No'
 
             #description part of embed
             desc = f"**Username :** {user.name}\n"
@@ -160,11 +185,13 @@ class Leveling(commands.Cog):
                 desc += f"**Rank:** {common_roles[0]}\n"
 
             desc += f'**Level:** {level}\n**XP:** {xp}/{xp_needed}\n**No. of Messages Sent:** {msg_count}\n'
-            desc += f'**Progress to Next Level :\n{progress_bar}**\n**XP till next level:** {xp_remaining}\n'
+            desc += f'**Progress to Next Level :\n{progress_bar}**\n**XP till next level:** {xp_remaining}\n\n'
+
+            desc += f'**Status : {status}\nServer Booster : {boost}**\n'
             desc += f'**Joined at :** {discord.utils.format_dt(user.joined_at,style="R")} / {discord.utils.format_dt(user.joined_at,style="f")}\n'
             desc += f'**Created at :** {discord.utils.format_dt(user.created_at,style="R")} / {discord.utils.format_dt(user.created_at,style="f")}\n'
             desc += f'**Active Roles : ** {", ".join([role.mention for role in user.roles])}'
-
+            
             # Create an embed to display the level information and rank
             embed = discord.Embed(title=f"{user.display_name}'s Profile",
                                   color=discord.Color.random(),
