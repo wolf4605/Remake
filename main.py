@@ -1,4 +1,5 @@
 import discord
+import wavelink
 import settings
 import logging
 import os
@@ -37,5 +38,16 @@ async def on_ready():
     Function called when the bot is ready to start receiving events.
     """
     print(f'Logged in as {bot.user}.')
+
+@bot.listen()
+async def on_wavelink_node_ready(node: wavelink.Node):
+    """
+    Called when a Wavelink node is ready.
+    
+    Parameters:
+        node (wavelink.Node): The Wavelink node that is ready.
+    """
+    # Print a message indicating that the node has successfully connected
+    print(f'Node : {node.id} successfully connected.')
 
 bot.run(token=settings.Token, log_handler=log, log_level=logging.DEBUG, root_logger=True)
