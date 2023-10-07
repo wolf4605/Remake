@@ -6,7 +6,7 @@ from num2words import num2words
 import random
 import os
 
-def welcome(member:discord.Member):
+def welcome_member(member:discord.Member):
 
     pos = sum(m.joined_at < member.joined_at for m in member.guild.members
         if m.joined_at is not None)
@@ -153,6 +153,4 @@ def welcome(member:discord.Member):
             )
 
     return background.image_bytes
-    file = File(fp=background.image_bytes, filename="wlcbg`.jpg")
 
-#Nothing
