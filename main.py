@@ -1,5 +1,6 @@
 import discord
 import wavelink
+import asyncio
 import settings
 import logging
 import os
@@ -59,24 +60,37 @@ async def on_command_error(ctx, error):
             return
         if isinstance(error, commands.MissingPermissions):
             missing_permission = str(error.missing_perms[0])
-            await ctx.send(embed=discord.Embed(title='oops!!!',
-                            description=f"Sorry, you need the '{missing_permission}' permission to use this command.",
+            await ctx.message.delete()
+            emb = await ctx.send(embed=discord.Embed(title='oops!!!',
+                            description=f"Sorry, you need the ``{missing_permission}`` permission to use this command.",
                             color=discord.Color.red()))
+
+            await asyncio.sleep(5)
+            await emb.delete()
+
         elif isinstance(error, commands.CommandNotFound):
             command_name = ctx.invoked_with
-            await ctx.send(embed=discord.Embed(title='oops!!!',
-                            description=f"No command found called '{command_name}'.",
+            emb = await ctx.send(embed=discord.Embed(title='oops!!!',
+                            description=f"No command found called ``{command_name}``.",
                             color=discord.Color.red()))
+            await asyncio.sleep(5)
+            await emb.delete()
         elif isinstance(error, commands.MissingRequiredArgument):
             param = str(error.param)
-            await ctx.send(embed=discord.Embed(title='oops!!!',
-                            description=f"You forgot to give the '{param}' argument.",
+            await ctx.message.delete()
+            emb = await ctx.send(embed=discord.Embed(title='oops!!!',
+                            description=f"You forgot to give the ``{param}`` argument.",
                             color=discord.Color.red()))
+            await asyncio.sleep(5)
+            await emb.delete()
         elif isinstance(error, commands.MissingRole):
             missing_role = str(error.missing_role)
-            await ctx.send(embed=discord.Embed(title='oops!!!',
-                            description=f"Sorry, you need the '{missing_role}' role to use this command.",
+            await ctx.message.delete()
+            emb = await ctx.send(embed=discord.Embed(title='oops!!!',
+                            description=f"Sorry, you need the ``{missing_role}`` role to use this command.",
                         color=discord.Color.red()))
+            await asyncio.sleep(5)
+            await emb.delete()
     except Exception as e:
         await ctx.send(embed=discord.Embed(title=f'❌ Error!!',
                                            description=f"Oops! Something went wrong.\n```{e}```",
