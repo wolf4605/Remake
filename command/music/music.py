@@ -138,11 +138,11 @@ class Music(commands.Cog):
             mch_id = int(data['channel_id'])
             mem_id = int(data['embed_id'])
             m_channel = message.channel
-            song= message.content
-            
-            await message.delete()
 
             if m_channel.id == mch_id:
+                song= message.content
+            
+                await message.delete()
                 if not message.author.voice:
                     em = discord.Embed(title='Bruh...',
                         description='Seems that you are not in a voice channel.\nPlease join a voice channel and then search for a song.',
